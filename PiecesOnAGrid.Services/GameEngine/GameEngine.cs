@@ -1,5 +1,7 @@
 ﻿using PiecesOnAGrid.Domain.Board;
 using PiecesOnAGrid.Domain.Piece;
+using System.Data;
+using System.Runtime.CompilerServices;
 
 namespace PiecesOnAGrid.Service.GameEngineService
 {
@@ -61,6 +63,47 @@ namespace PiecesOnAGrid.Service.GameEngineService
             WriteOutput?.Invoke(piece, res);
 
             return Task.FromResult(res);
+        }
+
+        public Task<int> GetCountDFS(Board<TBoardType> board, PieceBase piece, int digits = 7, Action<PieceBase, int>? WriteOutput = null)
+        {
+            // This is slower than the first, but we'll use it to check answers
+
+            Dictionary<(int row, int col, int depth), int> knownSolutions = new Dictionary<(int row, int col, int depth), int>();
+
+            int total = 0;
+
+            for (int r = 0; r < board.GetRowBound(); r++)
+            {
+                for (int c = 0; c < board.GetColBound(); c++)
+                {
+                    if (!board.IsSquareStartable(r, c)) continue;
+                    total += DFS(r, c, digits - 1);
+                }
+            }
+
+            int DFS(int row, int col, int depth)
+            {
+                if (depth == 0) return 1;
+                else if (knownSolutions.ContainsKey((row, col, depth))) return knownSolutions[(row, col, depth)];
+
+                int total = 0;
+
+                foreach (var move in piece.GetMoves((row, col), board.GetRowBound(), board.GetColBound()))
+                {
+                    if (board.IsSquareVisitable(move.row, move.col))
+                    {
+                        if (!knownSolutions.ContainsKey((move.row, move.col, depth - 1))) knownSolutions[(move.row, move.col, depth - 1)] = DFS(move.row, move.col, depth - 1);
+                        total += knownSolutions[(move.row, move.col, depth - 1)];
+                    }
+                }
+                return total;
+            }
+
+            WriteOutput?.Invoke(piece, total);
+
+            return Task.FromResult(total);
+
         }
 
     }

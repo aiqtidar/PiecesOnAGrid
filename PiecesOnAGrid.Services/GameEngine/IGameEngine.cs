@@ -7,6 +7,6 @@ namespace PiecesOnAGrid.Service.GameEngineService
     {
         public Task<int> GetCount(Board<TBoardType> board, PieceBase piece, int digits, Action<PieceBase, int>? WriteOutput = null);
 
-
+        public Task<int> GetCountDFS(Board<TBoardType> board, PieceBase piece, int digits, Action<PieceBase, int>? WriteOutput = null);
     }
 }

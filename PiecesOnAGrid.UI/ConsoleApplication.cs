@@ -3,6 +3,7 @@ using PiecesOnAGrid.Domain.Piece;
 using System.Text.Json;
 using PiecesOnAGrid.Domain.Board;
 using PiecesOnAGrid.Service.GameEngineService;
+using System.Globalization;
 
 namespace PiecesOnAGrid.UI
 {
@@ -22,30 +23,37 @@ namespace PiecesOnAGrid.UI
 
             Board<int> board = GetBoard(configuration.GetSection("Board"));
 
-            CalculateSolutions(pieces, board);
+            int digits = configuration.GetValue<int>("Digits");
+
+            CalculateSolutions(pieces, board, digits);
         }
 
-        private async void CalculateSolutions(IEnumerable<PieceBase> pieces, Board<int> board)
+        private void CalculateSolutions(IEnumerable<PieceBase> pieces, Board<int> board, int digits = 7)
         {
-            #region ActualApplicationCode
+            // Lets output results to the console for now.
+            Action<PieceBase, int> outputWriter = ((PieceBase piece, int number) => Console.WriteLine($"Counted {number} results for {piece}"));
+            List<Task>? tasks;
+            Task t;
 
-            // Lets output to the console and the file.
-            Action<PieceBase, int> outputWriter = WriteResultToConsole;
-            //outputWriter += WriteResultToFile;
+            // Solve the problem with bottom up dynamic programming ----------------------------------------------------------------
+            SolveWithBottomUpDP(pieces, board, digits, outputWriter, out tasks, out t);
 
+            // Solve the problem with DFS ----------------------------------------------------------------
+            SolveWithDFS(pieces, board, digits, outputWriter, out tasks, out t);
 
-            // TODO: Add Digits to config
-            int digits = 7;
-            var tasks = new List<Task>();
+        }
 
+        private void SolveWithBottomUpDP(IEnumerable<PieceBase> pieces, Board<int> board, int digits, Action<PieceBase, int> outputWriter, out List<Task>? tasks, out Task t)
+        {
+            Console.WriteLine("Attempting to solve with bottom up dynamic programming");
+
+            tasks = new List<Task>();
             foreach (var piece in pieces)
             {
                 tasks.Add(Task.Run(() => GameEngine.GetCount(board, piece, digits, outputWriter)));
             };
 
-            Console.WriteLine("Awaiting Tasks to finish...");
-
-            Task t = Task.WhenAll(tasks);
+            t = Task.WhenAll(tasks);
             try
             {
                 t.Wait();
@@ -56,38 +64,35 @@ namespace PiecesOnAGrid.UI
                 throw;
             }
 
-            if (t.Status == TaskStatus.RanToCompletion) Console.WriteLine("All tasks Completed!");
+            if (t.Status == TaskStatus.RanToCompletion) Console.WriteLine("All dynamic programming solutions completed!");
             else if (t.Status == TaskStatus.Faulted) Console.WriteLine("Some tasks failed");
 
+            Console.WriteLine();
+        }
 
+        private void SolveWithDFS(IEnumerable<PieceBase> pieces, Board<int> board, int digits, Action<PieceBase, int> outputWriter, out List<Task> tasks, out Task t)
+        {
+            Console.WriteLine($"Attempting to solve with DFS");
 
-            #endregion
-
-            #region Helpers
-
-            // Just a custom method to write to a file
-            void WriteResultToFile(PieceBase piece, int number)
+            tasks = new List<Task>();
+            foreach (var piece in pieces)
             {
-                string filePath = $"results_{DateTime.Now}.txt";
+                tasks.Add(Task.Run(() => GameEngine.GetCountDFS(board, piece, digits, outputWriter)));
+            };
 
-                try
-                {
-                    using (StreamWriter writer = new StreamWriter(filePath)) writer.WriteLine($"Counted {number} results for {piece}");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"An error occurred while writing to the file: {e.Message}");
-                    throw;
-                }
+            t = Task.WhenAll(tasks);
+            try
+            {
+                t.Wait();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"An exception occured : {e.Message}");
+                throw;
             }
 
-            // Just a custom method to write to a file
-            void WriteResultToConsole(PieceBase piece, int number)
-            {
-                Console.WriteLine($"Counted {number} results for {piece}");
-            }
-
-            #endregion
+            if (t.Status == TaskStatus.RanToCompletion) Console.WriteLine("All dynamic programming solutions completed!");
+            else if (t.Status == TaskStatus.Faulted) Console.WriteLine("Some tasks failed");
         }
 
         private Board<int> GetBoard(IConfigurationSection boardConfigs)

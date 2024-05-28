@@ -1,4 +1,5 @@
 {
+  "Digits" : 7,
   "Pieces": [
     {
       "Type": "HoppingPiece",
