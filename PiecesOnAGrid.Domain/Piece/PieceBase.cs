@@ -8,6 +8,8 @@ namespace PiecesOnAGrid.Domain.Piece
 
         public PieceBase(string name)
         {
+            if (name == null) throw new NullReferenceException("Name cannot be null for a piece");
+
             Name = name;
         }
 

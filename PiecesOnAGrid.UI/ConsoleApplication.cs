@@ -3,7 +3,6 @@ using PiecesOnAGrid.Domain.Piece;
 using System.Text.Json;
 using PiecesOnAGrid.Domain.Board;
 using PiecesOnAGrid.Service.GameEngineService;
-using System.Globalization;
 
 namespace PiecesOnAGrid.UI
 {
@@ -20,9 +19,7 @@ namespace PiecesOnAGrid.UI
         {
 
             var pieces = LoadPieces(configuration.GetSection("Pieces").GetChildren());
-
             Board<int> board = GetBoard(configuration.GetSection("Board"));
-
             int digits = configuration.GetValue<int>("Digits");
 
             CalculateSolutions(pieces, board, digits);
@@ -47,13 +44,12 @@ namespace PiecesOnAGrid.UI
         {
             Console.WriteLine("Attempting to solve with bottom up dynamic programming");
 
-            tasks = new List<Task>();
-            foreach (var piece in pieces)
-            {
-                tasks.Add(Task.Run(() => GameEngine.GetCount(board, piece, digits, outputWriter)));
-            };
 
+            // Get tasks to run in separate threads
+            tasks = new List<Task>();
+            foreach (var piece in pieces) tasks.Add(Task.Run(() => GameEngine.GetCount(board, piece, digits, outputWriter)));
             t = Task.WhenAll(tasks);
+
             try
             {
                 t.Wait();
@@ -74,13 +70,11 @@ namespace PiecesOnAGrid.UI
         {
             Console.WriteLine($"Attempting to solve with DFS");
 
+            // Get tasks to run in separate threads
             tasks = new List<Task>();
-            foreach (var piece in pieces)
-            {
-                tasks.Add(Task.Run(() => GameEngine.GetCountDFS(board, piece, digits, outputWriter)));
-            };
-
+            foreach (var piece in pieces) tasks.Add(Task.Run(() => GameEngine.GetCountDFS(board, piece, digits, outputWriter)));
             t = Task.WhenAll(tasks);
+
             try
             {
                 t.Wait();
@@ -91,7 +85,7 @@ namespace PiecesOnAGrid.UI
                 throw;
             }
 
-            if (t.Status == TaskStatus.RanToCompletion) Console.WriteLine("All dynamic programming solutions completed!");
+            if (t.Status == TaskStatus.RanToCompletion) Console.WriteLine("All DFS solutions completed!");
             else if (t.Status == TaskStatus.Faulted) Console.WriteLine("Some tasks failed");
         }
 
@@ -136,19 +130,22 @@ namespace PiecesOnAGrid.UI
 
                 if (type is null || pieceConfiguration is null || pieceConfiguration.GetValue<string>("Name") == null) throw new JsonException("Unable to read piece configuration");
 
+                // Note: These null references are not accurate and have been taken care of in line of code above
                 PieceBase pieceObject = section.GetValue<string>("Type") switch
                 {
                     "HoppingPiece" => new HoppingPiece(pieceConfiguration.GetValue<string>("Name"), ListToTuple(pieceConfiguration.GetSection("HoppingOffsets").Get<IList<IList<int>>>())),
                     "DirectionPiece" => new DirectionPiece(pieceConfiguration.GetValue<string>("Name"), ListToTuple(pieceConfiguration.GetSection("Directions").Get<IList<IList<int>>>())),
-                    _ => throw new JsonException("Unknown piece type.")
+                    _ => throw new NotImplementedException("Unknown piece type encountered!")
                 };
 
                 yield return pieceObject;
             }
         }
 
-        private IList<(int, int)> ListToTuple(IList<IList<int>> list)
+        private IList<(int, int)> ListToTuple(IList<IList<int>>? list)
         {
+            if (list == null) throw new ArgumentNullException("Null list while parsing configurations");
+
             IList<(int row, int col)> l = new List<(int row, int col)>();
             foreach (var item in list) l.Add((item[0], item[1]));
             return l;

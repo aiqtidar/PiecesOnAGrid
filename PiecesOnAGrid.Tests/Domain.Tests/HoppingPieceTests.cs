@@ -58,5 +58,11 @@ namespace PiecesOnAGrid.Tests.Domain.Tests
             // Piece is centered at 0,0
             Assert.IsTrue(King.ToString().CompareTo("King") == 0);
         }
+
+        [Test]
+        public void Constructor_CannotBeInitializedWithoutAValidName()
+        {
+            Assert.Throws<NullReferenceException>(() => new HoppingPiece(null, []));
+        }
     }
 }

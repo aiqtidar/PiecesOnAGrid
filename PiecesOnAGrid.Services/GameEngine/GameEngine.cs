@@ -1,18 +1,11 @@
 ﻿using PiecesOnAGrid.Domain.Board;
 using PiecesOnAGrid.Domain.Piece;
-using System.Data;
-using System.Runtime.CompilerServices;
 
 namespace PiecesOnAGrid.Service.GameEngineService
 {
     public class GameEngine<TBoardType> : IGameEngine<TBoardType>
     {
-
-        public GameEngine()
-        {
-        }
-
-        // Approach: Dynamic Programming with memoization
+        // Approach: Dynamic Programming (bottom up)
         // The number of possible 1 digit numbers that can be generated from each digit is the number of moves from that digit
         // The number of possible 2 digit numbers that can be generated from each digit is the number of moves from the 1st digit + number of possible moves from each second digit
         // ...
@@ -59,18 +52,16 @@ namespace PiecesOnAGrid.Service.GameEngineService
             }
 
             var res = countGrid.Sum(kv => kv.Value);
-
             WriteOutput?.Invoke(piece, res);
-
             return Task.FromResult(res);
         }
 
+
+        // The typical DFS method used for these problems, with memoization
+        // This approach is slower than the first, but I wanted to check my answers
         public Task<int> GetCountDFS(Board<TBoardType> board, PieceBase piece, int digits = 7, Action<PieceBase, int>? WriteOutput = null)
         {
-            // This is slower than the first, but we'll use it to check answers
-
             Dictionary<(int row, int col, int depth), int> knownSolutions = new Dictionary<(int row, int col, int depth), int>();
-
             int total = 0;
 
             for (int r = 0; r < board.GetRowBound(); r++)
@@ -86,7 +77,6 @@ namespace PiecesOnAGrid.Service.GameEngineService
             {
                 if (depth == 0) return 1;
                 else if (knownSolutions.ContainsKey((row, col, depth))) return knownSolutions[(row, col, depth)];
-
                 int total = 0;
 
                 foreach (var move in piece.GetMoves((row, col), board.GetRowBound(), board.GetColBound()))
@@ -101,9 +91,7 @@ namespace PiecesOnAGrid.Service.GameEngineService
             }
 
             WriteOutput?.Invoke(piece, total);
-
             return Task.FromResult(total);
-
         }
 
     }

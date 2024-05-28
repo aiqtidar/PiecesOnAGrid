@@ -4,7 +4,7 @@ using System.Net.NetworkInformation;
 
 namespace PiecesOnAGrid.Tests.Domain.Tests
 {
-    public class DirectionPieceTests
+    public class GameEngineTests
     {
         private DirectionPiece Rook;
 
@@ -57,6 +57,12 @@ namespace PiecesOnAGrid.Tests.Domain.Tests
         {
             // Piece is centered at 0,0
             Assert.IsTrue(Rook.ToString().CompareTo("Rook") == 0);
+        }
+
+        [Test]
+        public void Constructor_CannotBeInitializedWithoutAValidName()
+        {
+            Assert.Throws<NullReferenceException>(() => new DirectionPiece(null, []));
         }
     }
 }

@@ -27,8 +27,4 @@
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services.Tests\" />
-  </ItemGroup>
-
 </Project>

@@ -58,7 +58,7 @@ namespace PiecesOnAGrid.Domain.Board
             {
                 for (int j = 0; j < GetColBound(); j++)
                 {
-                    builder.Append($"{Values[i,j].ToString()} ");
+                    builder.Append($"{Values[i,j]?.ToString()} ");
                 }
                 builder.AppendLine("");
             }

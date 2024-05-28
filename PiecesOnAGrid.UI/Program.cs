@@ -15,10 +15,9 @@ public class Program
         // COnfigure services
         var serviceCollection = new ServiceCollection();
         ConfigureServices(serviceCollection);
-        var serviceProvider = serviceCollection.BuildServiceProvider();
-
-        var app = serviceProvider.GetService<ConsoleApplication>();
-        app?.Run(configuration);
+        
+        // Build and run
+        serviceCollection.BuildServiceProvider().GetService<ConsoleApplication>()?.Run(configuration);
     }
 
     private static void ConfigureServices(IServiceCollection services)
