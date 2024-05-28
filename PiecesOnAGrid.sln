@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiecesOnAGrid.Services", "P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiecesOnAGrid.Domain", "PiecesOnAGrid.Domain\PiecesOnAGrid.Domain.csproj", "{B3F5A751-1D5C-464B-A443-FEA1B394C9F2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiecesOnAGrid.Tests", "PiecesOnAGrid.Tests\PiecesOnAGrid.Tests.csproj", "{9A6FD49E-EC0F-43E7-B9CE-4A1C3ACD3A6C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{B3F5A751-1D5C-464B-A443-FEA1B394C9F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3F5A751-1D5C-464B-A443-FEA1B394C9F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3F5A751-1D5C-464B-A443-FEA1B394C9F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A6FD49E-EC0F-43E7-B9CE-4A1C3ACD3A6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A6FD49E-EC0F-43E7-B9CE-4A1C3ACD3A6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A6FD49E-EC0F-43E7-B9CE-4A1C3ACD3A6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A6FD49E-EC0F-43E7-B9CE-4A1C3ACD3A6C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

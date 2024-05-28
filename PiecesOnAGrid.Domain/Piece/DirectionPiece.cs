@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,9 +14,11 @@ namespace PiecesOnAGrid.Domain.Piece
 
         public required IEnumerable<(int row, int col)> Directions { get; set; }
 
+        [SetsRequiredMembers]
         public DirectionPiece(string name, IEnumerable<(int row, int col)> directions) : base(name)
         {
             Directions = directions;
+            Name = name;
         }
 
         public override IEnumerable<(int row, int col)> GetMoves((int row, int col) location, int rowBound, int colBound)

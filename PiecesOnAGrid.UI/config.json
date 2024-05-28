@@ -1,0 +1,101 @@
+{
+  "Pieces": [
+    {
+      "Type": "HoppingPiece",
+      "Object": {
+        "Name": "King",
+        "HoppingOffsets": [
+          [ 1, 0 ],
+          [ -1, 0 ],
+          [ 0, 1 ],
+          [ 0, -1 ],
+          [ 1, 1 ],
+          [ 1, -1 ],
+          [ -1, 1 ],
+          [ -1, -1 ]
+        ]
+      }
+    },
+    {
+      "Type": "DirectionPiece",
+      "Object": {
+        "Name": "Queen",
+        "Directions": [
+          [ 1, 0 ],
+          [ -1, 0 ],
+          [ 0, 1 ],
+          [ 0, -1 ],
+          [ 1, 1 ],
+          [ 1, -1 ],
+          [ -1, 1 ],
+          [ -1, -1 ]
+        ]
+      }
+    },
+    {
+      "Type": "DirectionPiece",
+      "Object": {
+        "Name": "Rook",
+        "Directions": [
+          [ 1, 0 ],
+          [ -1, 0 ],
+          [ 0, 1 ],
+          [ 0, -1 ]
+        ]
+      }
+    },
+    {
+      "Type": "HoppingPiece",
+      "Object": {
+        "Name": "Knight",
+        "HoppingOffsets": [
+          [ 2, 1 ],
+          [ 2, -1 ],
+          [ -2, 1 ],
+          [ -2, -1 ],
+          [ 1, 2 ],
+          [ 1, -2 ],
+          [ -1, 2 ],
+          [ -1, -2 ]
+        ]
+      }
+    },
+    {
+      "Type": "DirectionPiece",
+      "Object": {
+        "Name": "Bishop",
+        "Directions": [
+          [ 1, 1 ],
+          [ 1, -1 ],
+          [ -1, 1 ],
+          [ -1, -1 ]
+        ]
+      }
+    },
+    {
+      "Type": "HoppingPiece",
+      "Object": {
+        "Name": "PawnGoingUp",
+        "HoppingOffsets": [
+          [ 0, 1 ]
+        ]
+      }
+    }
+  ],
+  "Board": {
+    "Values": [
+      [ 1, 2, 3 ],
+      [ 4, 5, 6 ],
+      [ 7, 8, 9 ],
+      [ -1, 0, -1 ]
+    ],
+    "UnvisitableSquares": [
+      [ 3, 0 ],
+      [ 3, 2 ]
+    ],
+    "Unstartable": [
+      [ 0, 0 ],
+      [ 3, 1 ]
+    ]
+  }
+}

@@ -1,4 +1,6 @@
-﻿namespace PiecesOnAGrid.Domain.Board
+﻿using System.Text;
+
+namespace PiecesOnAGrid.Domain.Board
 {
     // I'm limiting this class to 2D boards. I understand that there can be nD boards designed but it seems to be a stretch for this simple problem.
     public class Board<T>
@@ -9,6 +11,8 @@
 
         public Board(T[,] values, IEnumerable<(int, int)>? unvisitableSquares = null, IEnumerable<(int, int)>? unstartableSquares = null)
         {
+            ArgumentNullException.ThrowIfNull(values);
+
             Values = values;
 
             if (unvisitableSquares is not null) foreach (var unvisitable in unvisitableSquares) UnvisitableSquares.Add(unvisitable);
@@ -22,7 +26,7 @@
 
         public bool IsSquareStartable(int row, int col)
         {
-            return !Unstartable.Contains((row, col));
+            return !Unstartable.Contains((row, col)) && !UnvisitableSquares.Contains((row,col));
         }
 
         public bool IsSquareWithinBounds(int row, int col)
@@ -44,6 +48,22 @@
         public int GetColBound()
         {
             return Values.GetLength(1);
+        }
+
+        public override string ToString()
+        {
+            var builder = new StringBuilder();
+
+            for (int i = 0; i < GetRowBound(); i++)
+            {
+                for (int j = 0; j < GetColBound(); j++)
+                {
+                    builder.Append($"{Values[i,j].ToString()} ");
+                }
+                builder.AppendLine("");
+            }
+
+            return builder.ToString();
         }
     }
 }

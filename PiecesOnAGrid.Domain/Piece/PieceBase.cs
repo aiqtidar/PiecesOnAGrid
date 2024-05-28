@@ -19,6 +19,9 @@ namespace PiecesOnAGrid.Domain.Piece
 
         public abstract IEnumerable<(int row, int col)> GetMoves((int row, int col) location, int rowBound, int colBound);
 
-
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }
