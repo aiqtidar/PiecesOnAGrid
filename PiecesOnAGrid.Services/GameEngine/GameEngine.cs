@@ -17,9 +17,9 @@ namespace PiecesOnAGrid.Service.GameEngineService
         // The number of possible k digit numbers that can be generated from each digit is the sum of moves from each iteration
 
         // TODO: Make this async
-        public int GetCount(Board<TBoardType> board, PieceBase piece, int digits = 7, Action<PieceBase, int>? WriteOutput = null)
+        public Task<int> GetCount(Board<TBoardType> board, PieceBase piece, int digits = 7, Action<PieceBase, int>? WriteOutput = null)
         {
-            if (digits == 0) return 0;
+            if (digits == 0) return Task.FromResult(0);
 
             var countGrid = new Dictionary<(int row, int col), int>();
 
@@ -34,8 +34,8 @@ namespace PiecesOnAGrid.Service.GameEngineService
 
             if (digits == 1)
             {
-                WriteOutput?.Invoke(piece, countGrid.Count); 
-                return countGrid.Count;
+                WriteOutput?.Invoke(piece, countGrid.Count);
+                return Task.FromResult(countGrid.Count);
             }
 
             for (int digitNumber = 2; digitNumber <= digits; digitNumber++)
@@ -60,7 +60,7 @@ namespace PiecesOnAGrid.Service.GameEngineService
 
             WriteOutput?.Invoke(piece, res);
 
-            return countGrid.Sum(kv => kv.Value);
+            return Task.FromResult(res);
         }
 
     }

@@ -1,18 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using PiecesOnAGrid.Domain.Piece;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Text.Json.Serialization;
 using System.Text.Json;
-using System.Threading.Tasks;
-using System.ComponentModel.Design;
 using PiecesOnAGrid.Domain.Board;
 using PiecesOnAGrid.Service.GameEngineService;
-using static System.Collections.Specialized.BitVector32;
 
 namespace PiecesOnAGrid.UI
 {
@@ -35,21 +25,41 @@ namespace PiecesOnAGrid.UI
             CalculateSolutions(pieces, board);
         }
 
-        private void CalculateSolutions(IEnumerable<PieceBase> pieces, Board<int> board)
+        private async void CalculateSolutions(IEnumerable<PieceBase> pieces, Board<int> board)
         {
             #region ActualApplicationCode
 
             // Lets output to the console and the file.
             Action<PieceBase, int> outputWriter = WriteResultToConsole;
-
             //outputWriter += WriteResultToFile;
 
+
+            // TODO: Add Digits to config
             int digits = 7;
+            var tasks = new List<Task>();
 
             foreach (var piece in pieces)
             {
-                GameEngine.GetCount(board, piece, digits, outputWriter);
+                tasks.Add(Task.Run(() => GameEngine.GetCount(board, piece, digits, outputWriter)));
             };
+
+            Console.WriteLine("Awaiting Tasks to finish...");
+
+            Task t = Task.WhenAll(tasks);
+            try
+            {
+                t.Wait();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"An exception occured : {e.Message}");
+                throw;
+            }
+
+            if (t.Status == TaskStatus.RanToCompletion) Console.WriteLine("All tasks Completed!");
+            else if (t.Status == TaskStatus.Faulted) Console.WriteLine("Some tasks failed");
+
+
 
             #endregion
 
